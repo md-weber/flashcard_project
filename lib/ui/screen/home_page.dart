@@ -13,7 +13,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final CSVReader csvReader = CSVReader();
-  late Map<String, String> questionAnswerMap;
+  late List<MapEntry<String, String>> questionAnswerMap;
   late MapEntry<String, String> flashCardHeader;
   List<String>? questions;
   List<String>? answers;
@@ -23,8 +23,8 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     var file = File(
         "/Users/maxweber/AndroidStudioProjects/flashcard_project/test_data/learn english/lesson_1.csv");
-    questionAnswerMap = csvReader.readLessonFrom(file);
-    flashCardHeader = questionAnswerMap.entries.toList().removeAt(1);
+    questionAnswerMap = csvReader.readLessonFrom(file).entries.toList();
+    flashCardHeader = questionAnswerMap.removeAt(0);
   }
 
   @override
@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
                             Expanded(
                               child: Center(
                                 child: Text(
-                                  questionAnswerMap.entries.first.key,
+                                  questionAnswerMap.first.key,
                                 ),
                               ),
                             ),
