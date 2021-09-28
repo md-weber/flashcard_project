@@ -13,13 +13,18 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final CSVReader csvReader = CSVReader();
-  List<List<String>> flashcardData = [];
+  late Map<String, String> flashCardMap;
+  late MapEntry<String, String> flashCardHeader;
+  List<String>? questions;
+  List<String>? answers;
 
   @override
   initState() {
     super.initState();
-    var file = File("/Users/maxweber/AndroidStudioProjects/flashcard_project/test_data/learn english/lesson_1.csv");
-    flashcardData = csvReader.readLessonFrom(file);
+    var file = File(
+        "/Users/maxweber/AndroidStudioProjects/flashcard_project/test_data/learn english/lesson_1.csv");
+    flashCardMap = csvReader.readLessonFrom(file);
+    flashCardHeader = flashCardMap.entries.toList().removeAt(1);
   }
 
   @override
@@ -33,23 +38,32 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             Expanded(
-              child: Center(
-                child: flashcardData.isEmpty
-                    ? _buildLoadingSpinner()
-                    : Card(
-                        elevation: 8.0,
-                        child: Center(
-                          child: Text(
-                            flashcardData[1][0],
-                          ),
+              child: flashCardMap.isEmpty
+                  ? _buildLoadingSpinner()
+                  : Card(
+                      elevation: 8.0,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(flashCardHeader.key),
+                            Expanded(
+                              child: Center(
+                                child: Text(
+                                  flashCardMap.entries.first.key,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-              ),
+                    ),
             ),
             Row(
               children: [
                 IconButton(onPressed: () {}, icon: const Icon(Icons.cancel)),
-                IconButton(onPressed: () {}, icon: const Icon(Icons.check_circle)),
+                IconButton(
+                    onPressed: () {}, icon: const Icon(Icons.check_circle)),
               ],
             )
           ],
