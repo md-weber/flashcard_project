@@ -22,8 +22,8 @@ class CSVReader {
         throw UnsupportedError("The csv must have exactly 2 columns");
       }
 
-      questionAnswerMap.putIfAbsent(split[0], () {
-        return split[1];
+      questionAnswerMap.putIfAbsent(split[0].trim(), () {
+        return split[1].trim();
       });
     }
 

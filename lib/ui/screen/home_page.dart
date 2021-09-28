@@ -13,17 +13,30 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final CSVReader csvReader = CSVReader();
-  late List<MapEntry<String, String>> questionAnswerMap;
+  late List<MapEntry<String, String>> questionAnswerList;
   late MapEntry<String, String> questionAnswerHeader;
+  late MapEntry<String, String> currentQuestionAndAnswer;
   bool cardFlipped = false;
+  bool allCardsFinished = false;
 
   @override
   initState() {
     super.initState();
+    startLesson();
+  }
+
+  void startLesson() {
     var file = File(
         "/Users/maxweber/AndroidStudioProjects/flashcard_project/test_data/learn english/lesson_1.csv");
-    questionAnswerMap = csvReader.readLessonFrom(file).entries.toList();
-    questionAnswerHeader = questionAnswerMap.removeAt(0);
+
+    setState(() {
+      questionAnswerList = csvReader.readLessonFrom(file).entries.toList();
+      questionAnswerHeader = questionAnswerList.removeAt(0);
+      questionAnswerList.shuffle();
+      currentQuestionAndAnswer = questionAnswerList.removeAt(0);
+      cardFlipped = false;
+      allCardsFinished = false;
+    });
   }
 
   @override
@@ -37,7 +50,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             Expanded(
-              child: questionAnswerMap.isEmpty
+              child: allCardsFinished
                   ? _buildLoadingSpinner()
                   : IgnorePointer(
                       ignoring: cardFlipped,
@@ -58,8 +71,8 @@ class _HomePageState extends State<HomePage> {
                                   child: Center(
                                     child: Text(
                                       cardFlipped
-                                          ? questionAnswerMap.first.value
-                                          : questionAnswerMap.first.key,
+                                          ? currentQuestionAndAnswer.value
+                                          : currentQuestionAndAnswer.key,
                                     ),
                                   ),
                                 ),
@@ -74,10 +87,17 @@ class _HomePageState extends State<HomePage> {
                 ? Row(
                     children: [
                       IconButton(
-                          onPressed: () {}, icon: const Icon(Icons.cancel)),
+                        onPressed: getNextCard,
+                        icon: const Icon(Icons.cancel),
+                      ),
                       IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.check_circle)),
+                        onPressed: getNextCard,
+                        icon: const Icon(Icons.check_circle),
+                      ),
+                      IconButton(
+                        onPressed: startLesson,
+                        icon: const Icon(Icons.redo),
+                      ),
                     ],
                   )
                 : const SizedBox()
@@ -87,13 +107,24 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void getNextCard() {
+    if (questionAnswerList.isEmpty) {
+      setState(() => allCardsFinished = true);
+      return;
+    }
+    setState(() {
+      cardFlipped = false;
+      currentQuestionAndAnswer = questionAnswerList.removeAt(0);
+    });
+  }
+
   Column _buildLoadingSpinner() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: const [
-        Text("Your flashcards getting loaded"),
+        Text("Congratulations! You finished all your cards."),
         SizedBox(height: Insets.large),
-        CircularProgressIndicator(),
+        Text("Your stats are: 42 % correct answered"),
       ],
     );
   }
