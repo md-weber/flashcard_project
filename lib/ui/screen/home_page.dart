@@ -14,9 +14,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final CSVReader csvReader = CSVReader();
   late List<MapEntry<String, String>> questionAnswerMap;
-  late MapEntry<String, String> flashCardHeader;
-  List<String>? questions;
-  List<String>? answers;
+  late MapEntry<String, String> questionAnswerHeader;
+  bool cardFlipped = false;
 
   @override
   initState() {
@@ -24,7 +23,7 @@ class _HomePageState extends State<HomePage> {
     var file = File(
         "/Users/maxweber/AndroidStudioProjects/flashcard_project/test_data/learn english/lesson_1.csv");
     questionAnswerMap = csvReader.readLessonFrom(file).entries.toList();
-    flashCardHeader = questionAnswerMap.removeAt(0);
+    questionAnswerHeader = questionAnswerMap.removeAt(0);
   }
 
   @override
@@ -40,32 +39,48 @@ class _HomePageState extends State<HomePage> {
             Expanded(
               child: questionAnswerMap.isEmpty
                   ? _buildLoadingSpinner()
-                  : Card(
-                      elevation: 8.0,
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text(flashCardHeader.key),
-                            Expanded(
-                              child: Center(
-                                child: Text(
-                                  questionAnswerMap.first.key,
+                  : IgnorePointer(
+                      ignoring: cardFlipped,
+                      child: InkWell(
+                        onTap: () => setState(() => cardFlipped = !cardFlipped),
+                        child: Card(
+                          elevation: 8.0,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Text(
+                                  cardFlipped
+                                      ? questionAnswerHeader.value
+                                      : questionAnswerHeader.key,
                                 ),
-                              ),
+                                Expanded(
+                                  child: Center(
+                                    child: Text(
+                                      cardFlipped
+                                          ? questionAnswerMap.first.value
+                                          : questionAnswerMap.first.key,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
             ),
-            Row(
-              children: [
-                IconButton(onPressed: () {}, icon: const Icon(Icons.cancel)),
-                IconButton(
-                    onPressed: () {}, icon: const Icon(Icons.check_circle)),
-              ],
-            )
+            cardFlipped
+                ? Row(
+                    children: [
+                      IconButton(
+                          onPressed: () {}, icon: const Icon(Icons.cancel)),
+                      IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.check_circle)),
+                    ],
+                  )
+                : const SizedBox()
           ],
         ),
       ),
