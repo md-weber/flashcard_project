@@ -1,5 +1,6 @@
 import 'package:flashcard_project/design_system.dart';
 import 'package:flashcard_project/domain/flashcard_service.dart';
+import 'package:flashcard_project/repository/sheet_repo.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -10,7 +11,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final FlashcardService _flashcardService = FlashcardService();
+  final FlashcardService _flashcardService = FlashcardService(SheetRepo());
   late List<MapEntry<String, String>> questionAnswerList;
   late MapEntry<String, String> questionAnswerHeader;
   late MapEntry<String, String> currentQuestionAndAnswer;
