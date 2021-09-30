@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flashcard_project/design_system.dart';
 import 'package:flashcard_project/domain/csv_reader.dart';
+import 'package:flashcard_project/repository/auth.dart';
+import 'package:flashcard_project/repository/sheet_service.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -97,6 +99,13 @@ class _HomePageState extends State<HomePage> {
                       IconButton(
                         onPressed: startLesson,
                         icon: const Icon(Icons.redo),
+                      ),
+                      IconButton(
+                        onPressed: () async {
+                          final client = await Auth().getRegisteredHTTPClient();
+                          SheetService(client).getSheet();
+                        },
+                        icon: const Icon(Icons.ac_unit),
                       ),
                     ],
                   )
