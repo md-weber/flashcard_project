@@ -6,7 +6,9 @@ typedef HintString = String;
 typedef SolutionString = String;
 
 class FlashcardService {
-  final _sheetRepo = SheetRepo();
+  final SheetRepo _sheetRepo;
+
+  FlashcardService(this._sheetRepo);
 
   Future<MapEntry<HintString, SolutionString>> getHeadline() async {
     List<List<Object>>? entryList =
