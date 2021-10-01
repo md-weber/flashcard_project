@@ -1,4 +1,4 @@
-import 'package:flashcard_project/ui/screen/home_page.dart';
+import 'package:flashcard_project/ui/screen/lesson_selector_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomePage(),
+      home: LessonSelectorScreen(),
     );
   }
 }

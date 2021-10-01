@@ -19,6 +19,16 @@ class SheetRepo {
     return result.values;
   }
 
+  Future<List<File>> getFiles() async {
+    await init;
+    final result = await driveApi.files.list();
+    var files = result.items;
+    if (files == null) throw UnsupportedError("No files found");
+    return files
+        .where((element) => element.mimeType?.contains("spreadsheet") ?? false)
+        .toList();
+  }
+
   Future<void> initSheetRepo() async {
     final client = await authRepo.getRegisteredHTTPClient();
     sheetsApi = SheetsApi(client);
