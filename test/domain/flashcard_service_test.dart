@@ -41,6 +41,51 @@ main() {
       });
     });
 
-    group("getQuestionsAndAnswers", () {});
+    group("getQuestionsAndAnswers", () {
+      test("WHEN the SheetRepo return null THEN an UnsupportedError is thrown",
+          () async {
+        when(mockSheetRepo.getEntriesFromRange("A2:B1000")).thenAnswer(
+          (realInvocation) async => null,
+        );
+
+        try {
+          await subject.getQuestionsAndAnswers();
+        } catch (e) {
+          expect(e, isInstanceOf<UnsupportedError>());
+        }
+      });
+
+      test(
+          "WHEN we return a mapentry with one element THEN an UnsupportedError is thrown",
+          () async {
+        when(mockSheetRepo.getEntriesFromRange("A2:B1000")).thenAnswer(
+          (realInvocation) async => [
+            ["Deutsch"],
+          ],
+        );
+
+        try {
+          await subject.getQuestionsAndAnswers();
+        } catch (e) {
+          expect(e, isInstanceOf<UnsupportedError>());
+        }
+      });
+
+      test(
+          "WHEN we provide 2 entries with an empty space between THEN we return a Map with two entries",
+          () async {
+        when(mockSheetRepo.getEntriesFromRange("A2:B1000")).thenAnswer(
+          (realInvocation) async => [
+            ["Deutsch", "German"],
+            [],
+            ["Fahrrad", "Bicycle"]
+          ],
+        );
+
+        Map<String, String> result = await subject.getQuestionsAndAnswers();
+        expect(result.length, 2);
+        expect(result.values, ["German", "Bicycle"]);
+      });
+    });
   });
 }
