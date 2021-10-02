@@ -1,5 +1,6 @@
 import 'package:flashcard_project/domain/files_service.dart';
 import 'package:flashcard_project/domain/model/file_information.dart';
+import 'package:flashcard_project/ui/screen/home_page.dart';
 import 'package:flutter/material.dart';
 
 class LessonSelectorScreen extends StatefulWidget {
@@ -37,7 +38,7 @@ class _LessonSelectorScreenState extends State<LessonSelectorScreen> {
                     title: Text(possibleLecture[index].name),
                     trailing: const Icon(Icons.keyboard_arrow_right),
                     onTap: () {
-                      print(possibleLecture[index].id);
+                      HomePage.navigateTo(context, possibleLecture[index].id);
                     },
                   );
                 },

@@ -4,14 +4,24 @@ import 'package:flashcard_project/repository/sheet_repo.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  static navigateTo(context, String spreadsheetId) {
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) {
+        return HomePage(spreadsheetId: spreadsheetId);
+      },
+    ));
+  }
+
+  final String spreadsheetId;
+
+  const HomePage({Key? key, required this.spreadsheetId}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  final FlashcardService _flashcardService = FlashcardService(SheetRepo());
+  late FlashcardService _flashcardService;
   late List<MapEntry<String, String>> questionAnswerList;
   late MapEntry<String, String> questionAnswerHeader;
   late MapEntry<String, String> currentQuestionAndAnswer;
@@ -21,6 +31,7 @@ class _HomePageState extends State<HomePage> {
   @override
   initState() {
     super.initState();
+    _flashcardService = FlashcardService(SheetRepo(widget.spreadsheetId));
     startLesson();
   }
 
