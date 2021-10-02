@@ -19,7 +19,7 @@ class FilesService {
         .where((element) => element.title != "Flashcard App")
         .toList();
 
-    List<LectureFolder> t =
+    List<LectureFolder> result =
         folders.map((folder) => LectureFolder(folder.title ?? "", [])).toList();
 
     for (var spreadsheet in spreadsheets) {
@@ -27,13 +27,13 @@ class FilesService {
         (element) => element.id == spreadsheet.parents?[0].id,
       );
       final lectureFolder =
-          t.firstWhere((element) => element.name == folder.title);
+          result.firstWhere((element) => element.name == folder.title);
 
       lectureFolder.spreadsheets.add(
         LectureInformation(spreadsheet.title ?? "", spreadsheet.id ?? ""),
       );
     }
 
-    return t;
+    return result;
   }
 }
