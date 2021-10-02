@@ -10,14 +10,12 @@ class GDriveRepo {
     init = initSheetRepo();
   }
 
-  Future<List<File>> getFiles() async {
+  Future<List<File>> getFilesAndFolders() async {
     await init;
     final result = await driveApi.files.list();
     var files = result.items;
     if (files == null) throw UnsupportedError("No files found");
-    return files
-        .where((element) => element.mimeType?.contains("spreadsheet") ?? false)
-        .toList();
+    return files;
   }
 
   Future<void> initSheetRepo() async {

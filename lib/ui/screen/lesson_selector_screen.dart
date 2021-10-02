@@ -12,7 +12,7 @@ class LessonSelectorScreen extends StatefulWidget {
 
 class _LessonSelectorScreenState extends State<LessonSelectorScreen> {
   FileService fileService = FileService();
-  late Future<List<FileInformation>> getPossibleLectures;
+  late Future<List<LectureFolder>> getPossibleLectures;
 
   @override
   void initState() {
@@ -26,26 +26,34 @@ class _LessonSelectorScreenState extends State<LessonSelectorScreen> {
       appBar: AppBar(
         title: const Text("Select your lesson"),
       ),
-      body: FutureBuilder<List<FileInformation>>(
+      body: FutureBuilder<List<LectureFolder>>(
           future: getPossibleLectures,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              final possibleLecture = snapshot.data;
-              if (possibleLecture == null) return Container();
-              return ListView.separated(
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(possibleLecture[index].name),
-                    trailing: const Icon(Icons.keyboard_arrow_right),
-                    onTap: () {
-                      HomePage.navigateTo(context, possibleLecture[index].id);
-                    },
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return const Divider();
-                },
-                itemCount: possibleLecture.length,
+              final possibleLectureFolders = snapshot.data;
+              if (possibleLectureFolders == null) return Container();
+              return CustomScrollView(
+                slivers: [
+                  for (var lectureFolder in possibleLectureFolders) ...[
+                    SliverAppBar(
+                      title: Text(lectureFolder.name),
+                    ),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        return ListTile(
+                          title: Text(lectureFolder.spreadsheets[index].name),
+                          trailing: const Icon(Icons.keyboard_arrow_right),
+                          onTap: () {
+                            HomePage.navigateTo(
+                              context,
+                              lectureFolder.spreadsheets[index].id,
+                            );
+                          },
+                        );
+                      }, childCount: lectureFolder.spreadsheets.length),
+                    )
+                  ]
+                ],
               );
             }
             if (snapshot.hasError) return const Text("Something wrong happend");
