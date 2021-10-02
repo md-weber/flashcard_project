@@ -2,11 +2,13 @@ import 'package:flashcard_project/domain/model/file_information.dart';
 import 'package:flashcard_project/repository/gdrive_repo.dart';
 import 'package:googleapis/drive/v2.dart';
 
-class FileService {
-  final GDriveRepo _sheetRepo = GDriveRepo();
+class FilesService {
+  final GDriveRepo _gDriveRepo;
+
+  FilesService(this._gDriveRepo);
 
   Future<List<LectureFolder>> getPossibleLectures() async {
-    List<File> filesAndFolders = await _sheetRepo.getFilesAndFolders();
+    List<File> filesAndFolders = await _gDriveRepo.getFilesAndFolders();
 
     final spreadsheets = filesAndFolders
         .where((element) => element.mimeType?.contains("spreadsheet") ?? false)
