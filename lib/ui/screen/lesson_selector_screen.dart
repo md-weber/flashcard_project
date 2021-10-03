@@ -9,6 +9,14 @@ class LessonSelectorScreen extends StatefulWidget {
 
   @override
   State<LessonSelectorScreen> createState() => _LessonSelectorScreenState();
+
+  static void navigateTo(BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) {
+        return const LessonSelectorScreen();
+      },
+    ));
+  }
 }
 
 class _LessonSelectorScreenState extends State<LessonSelectorScreen> {
@@ -65,7 +73,7 @@ class _LessonSelectorScreenState extends State<LessonSelectorScreen> {
               );
             }
             if (snapshot.hasError) return const Text("Something wrong happend");
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
           }),
     );
   }

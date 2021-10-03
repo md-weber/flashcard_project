@@ -1,6 +1,7 @@
 import 'package:flashcard_project/design_system.dart';
 import 'package:flashcard_project/domain/flashcard_service.dart';
 import 'package:flashcard_project/repository/sheet_repo.dart';
+import 'package:flashcard_project/ui/screen/lesson_selector_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -21,6 +22,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late Future<bool> init;
   late FlashcardService _flashcardService;
   late List<MapEntry<String, String>> questionAnswerList;
   late MapEntry<String, String> questionAnswerHeader;
@@ -32,10 +34,10 @@ class _HomePageState extends State<HomePage> {
   initState() {
     super.initState();
     _flashcardService = FlashcardService(SheetRepo(widget.spreadsheetId));
-    startLesson();
+    init = startLesson();
   }
 
-  Future<void> startLesson() async {
+  Future<bool> startLesson() async {
     Map<String, String> _questionAnswerList =
         await _flashcardService.getQuestionsAndAnswers();
     questionAnswerList = _questionAnswerList.entries.toList();
@@ -47,6 +49,7 @@ class _HomePageState extends State<HomePage> {
       cardFlipped = false;
       allCardsFinished = false;
     });
+    return true;
   }
 
   @override
@@ -58,40 +61,57 @@ class _HomePageState extends State<HomePage> {
       body: Padding(
         padding: const EdgeInsets.all(Insets.small),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Expanded(
-              child: allCardsFinished
-                  ? _buildLoadingSpinner()
-                  : IgnorePointer(
-                      ignoring: cardFlipped,
-                      child: InkWell(
-                        onTap: () => setState(() => cardFlipped = !cardFlipped),
-                        child: Card(
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(
-                                  cardFlipped
-                                      ? questionAnswerHeader.value
-                                      : questionAnswerHeader.key,
-                                ),
-                                Expanded(
+            FutureBuilder<bool>(
+                future: init,
+                builder: (context, AsyncSnapshot<bool> snapshot) {
+                  if (snapshot.hasData) {
+                    return Expanded(
+                      child: allCardsFinished
+                          ? _buildLoadingSpinner()
+                          : IgnorePointer(
+                              ignoring: cardFlipped,
+                              child: InkWell(
+                                onTap: () =>
+                                    setState(() => cardFlipped = !cardFlipped),
+                                child: Card(
                                   child: Center(
-                                    child: Text(
-                                      cardFlipped
-                                          ? currentQuestionAndAnswer.value
-                                          : currentQuestionAndAnswer.key,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Text(
+                                          cardFlipped
+                                              ? questionAnswerHeader.value
+                                              : questionAnswerHeader.key,
+                                        ),
+                                        Expanded(
+                                          child: Center(
+                                            child: Text(
+                                              cardFlipped
+                                                  ? currentQuestionAndAnswer
+                                                      .value
+                                                  : currentQuestionAndAnswer
+                                                      .key,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                    ),
-            ),
+                    );
+                  }
+                  if (snapshot.hasError) {
+                    return const Text(
+                      "Sorry something went wrong, please try it later again",
+                    );
+                  }
+                  return const Center(child: CircularProgressIndicator());
+                }),
             cardFlipped
                 ? Row(
                     children: [
@@ -104,7 +124,7 @@ class _HomePageState extends State<HomePage> {
                         icon: const Icon(Icons.check_circle),
                       ),
                       IconButton(
-                        onPressed: startLesson,
+                        onPressed: () => init = startLesson(),
                         icon: const Icon(Icons.redo),
                       ),
                     ],
@@ -130,10 +150,22 @@ class _HomePageState extends State<HomePage> {
   Column _buildLoadingSpinner() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const [
-        Text("Congratulations! You finished all your cards."),
-        SizedBox(height: Insets.large),
-        Text("Your stats are: 42 % correct answered"),
+      children: [
+        const Text("Congratulations! You finished all your cards."),
+        const SizedBox(height: Insets.medium),
+        ElevatedButton(
+          onPressed: () {
+            init = startLesson();
+          },
+          child: const Text("Repeat Lesson"),
+        ),
+        const SizedBox(height: Insets.medium),
+        ElevatedButton(
+          onPressed: () {
+            LessonSelectorScreen.navigateTo(context);
+          },
+          child: const Text("Back to Lecture Selection"),
+        )
       ],
     );
   }
