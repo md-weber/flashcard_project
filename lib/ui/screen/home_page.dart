@@ -85,6 +85,7 @@ class _HomePageState extends State<HomePage> {
                                           cardFlipped
                                               ? questionAnswerHeader.value
                                               : questionAnswerHeader.key,
+                                          textAlign: TextAlign.center,
                                         ),
                                         Expanded(
                                           child: Center(
@@ -94,6 +95,7 @@ class _HomePageState extends State<HomePage> {
                                                       .value
                                                   : currentQuestionAndAnswer
                                                       .key,
+                                              textAlign: TextAlign.center,
                                             ),
                                           ),
                                         ),
