@@ -53,6 +53,7 @@ class _LessonSelectorScreenState extends State<LessonSelectorScreen> {
                       centerTitle: false,
                       backgroundColor: Colors.white,
                       forceElevated: true,
+                      automaticallyImplyLeading: false,
                     ),
                     SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
