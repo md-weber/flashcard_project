@@ -37,7 +37,14 @@ class _LessonSelectorScreenState extends State<LessonSelectorScreen> {
                 slivers: [
                   for (var lectureFolder in possibleLectureFolders) ...[
                     SliverAppBar(
-                      title: Text(lectureFolder.name),
+                      title: Text(
+                        lectureFolder.name,
+                        textAlign: TextAlign.left,
+                        style: const TextStyle(color: Colors.black),
+                      ),
+                      centerTitle: false,
+                      backgroundColor: Colors.white,
+                      forceElevated: true,
                     ),
                     SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
