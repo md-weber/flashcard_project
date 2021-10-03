@@ -1,7 +1,7 @@
 import 'package:flashcard_project/design_system.dart';
 import 'package:flashcard_project/domain/flashcard_service.dart';
 import 'package:flashcard_project/repository/sheet_repo.dart';
-import 'package:flashcard_project/ui/screen/lesson_selector_screen.dart';
+import 'package:flashcard_project/ui/screen/home/completion_widget.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -69,7 +69,9 @@ class _HomePageState extends State<HomePage> {
                   if (snapshot.hasData) {
                     return Expanded(
                       child: allCardsFinished
-                          ? _buildLoadingSpinner()
+                          ? CompletionWidget(onPressed: () {
+                              init = startLesson();
+                            })
                           : IgnorePointer(
                               ignoring: cardFlipped,
                               child: InkWell(
@@ -147,28 +149,5 @@ class _HomePageState extends State<HomePage> {
       cardFlipped = false;
       currentQuestionAndAnswer = questionAnswerList.removeAt(0);
     });
-  }
-
-  Column _buildLoadingSpinner() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text("Congratulations! You finished all your cards."),
-        const SizedBox(height: Insets.medium),
-        ElevatedButton(
-          onPressed: () {
-            init = startLesson();
-          },
-          child: const Text("Repeat Lesson"),
-        ),
-        const SizedBox(height: Insets.medium),
-        ElevatedButton(
-          onPressed: () {
-            LessonSelectorScreen.navigateTo(context);
-          },
-          child: const Text("Back to Lecture Selection"),
-        )
-      ],
-    );
   }
 }
