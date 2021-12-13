@@ -1,4 +1,5 @@
 [![Dart](https://github.com/md-weber/flashcard_project/actions/workflows/dart.yml/badge.svg?branch=main)](https://github.com/md-weber/flashcard_project/actions/workflows/dart.yml)
+[![Odysee Badge](https://img.shields.io/static/v1?label=Odysee&message=Invite&color=purple&style=flat-square&logo=odysee&logoColor=purple)](https://odysee.com/$/invite/@flutterexplained:7)
 
 # flashcard_project
 
